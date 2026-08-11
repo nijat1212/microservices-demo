@@ -2,7 +2,7 @@ name: Test GCP Connection
 
 on:
   push:
-    branches: [ "main", "master" ] # Запустится при пуше в вашу ветку
+    branches: [ "main", "master" ]
 
 jobs:
   test-gcp:
@@ -19,6 +19,6 @@ jobs:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
 
-    - name: Verify Connection (List Instances)
+    - name: Verify Connection
       run: |
         gcloud compute instances list
