@@ -1,4 +1,4 @@
-name: Terraform & GCP Practice
+name: DevOps Practice (Terraform & Docker Build)
 
 on:
   push:
@@ -6,10 +6,11 @@ on:
 
 jobs:
   terraform:
+    name: "Infrastructure Check"
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./my-infra # Указываем нашу новую изолированную папку
+        working-directory: ./my-infra
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -22,9 +23,24 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
 
-    - name: Terraform Init
-      run: terraform init
+    - name: Terraform Init & Plan
+      run: |
+        terraform init
+        terraform plan
 
-    - name: Terraform Plan
-      run: terraform plan
+  docker-build:
+    name: "CI: Build Docker Image"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Product Catalog Service
+      uses: docker/build-push-action@v6
+      with:
+        context: ./src/productcatalogservice
+        push: false # Пока просто тестируем сборку, никуда не отправляем
+        tags: productcatalogservice:test
