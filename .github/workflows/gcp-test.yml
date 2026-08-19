@@ -44,21 +44,3 @@ jobs:
         context: ./src/productcatalogservice
         push: false # Пока просто тестируем сборку, никуда не отправляем
         tags: productcatalogservice:test
-
-  auto-stop-vm:
-    name: "Cost Optimization: Stop VM"
-    runs-on: ubuntu-latest
-    needs: [terraform, docker-build] # Запустится только ПОСЛЕ того, как пройдут первые два шага
-    if: always() # Сработает ВСЕГДА, даже если сборка Docker или Terraform упадут с ошибкой
-    steps:
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-
-    - name: 💤 Safe Stop VM
-      run: |
-        gcloud compute instances stop linuxaome123-new --zone=europe-west3-a
